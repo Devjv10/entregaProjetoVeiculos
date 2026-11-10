@@ -137,3 +137,41 @@ export function VehicleImage({
     </div>
   );
 }
+export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+  return (
+    <article className="vehicle-card">
+      <div className="vehicle-visual">
+        <VehicleImage vehicle={vehicle} />
+        <div className="vehicle-badge">
+          <Status status={vehicle.status} />
+        </div>
+      </div>
+      <div className="vehicle-body">
+        <span className="eyebrow">
+          {categories[vehicle.category]}{" "}
+          <span className="dot-separator">•</span> {vehicle.year}
+        </span>
+        <h3>
+          {vehicle.brand} {vehicle.model}
+        </h3>
+        <p className="muted small">
+          {vehicle.color} <span className="dot-separator">•</span>{" "}
+          {vehicle.plate}
+        </p>
+        <div className="vehicle-bottom">
+          <p>
+            <strong>{money(vehicle.dailyRate)}</strong>
+            <span className="muted small"> / diária</span>
+          </p>
+          <Link
+            className="icon-button"
+            to={`/veiculos/${vehicle.id}`}
+            aria-label={`Ver detalhes de ${vehicle.brand} ${vehicle.model}`}
+          >
+            <ArrowRight size={20} />
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}

@@ -283,10 +283,10 @@ O projeto está preparado para versionamento: dependências e arquivos `.env` s�
 
 ## Integrantes
 
-| Nome | Matrícula | Responsabilidades |
-|---|---|---|
-| Preencher | Preencher | Preencher |
-| Preencher | Preencher | Preencher |
-| Preencher | Preencher | Preencher |
+| Nomes|
+| Rafael Ribeiro de Alustau |
+| Pedro Henrique Neves Vitorino |
+| João Victor Araújo de Andrade |
 
-**Professor(a):** preencher. **Turma/semestre:** preencher.
+
+

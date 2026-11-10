@@ -1,0 +1,33 @@
+{
+  "name": "driveflow",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "lint": "eslint backend frontend",
+    "test": "npm run test -w backend",
+    "test:integration": "npm run test:integration -w backend",
+    "db:generate": "npm run db:generate -w backend",
+    "db:migrate": "npm run db:migrate -w backend",
+    "db:seed": "npm run db:seed -w backend",
+    "db:test:migrate": "npm run db:test:migrate -w backend",
+    "format": "prettier --write backend/src backend/tests backend/scripts backend/prisma/seed.ts frontend/src frontend/vite.config.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.0",
+    "globals": "^16.4.0",
+    "prettier": "^3.9.10",
+    "typescript-eslint": "^8.46.0"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0",
+    "effect": "^3.20.0"
+  }
+}

@@ -268,22 +268,4 @@ Após `npm run build`, execute `npm run start -w backend` para o backend compila
 6. Registre a devolução e observe o valor final e a liberação do veículo.
 7. Consulte as locações como administrador e tente excluir um veículo com histórico.
 
-- [Roteiro completo e dez perguntas técnicas](docs/APRESENTACAO.md)
-- [Diagrama de casos de uso](docs/CASOS_DE_USO.md)
-- [Diagrama de entidades](docs/ENTIDADES.md)
 
-Os diagramas são propostas iniciais para adaptação às orientações do professor. Nenhuma questão da entrega individual foi inventada como se tivesse sido fornecida pela disciplina.
-
-## Publicação no GitHub
-
-O projeto está preparado para versionamento: dependências e arquivos `.env` são ignorados, exemplos não incluem credenciais reais e o lockfile deve ser versionado. Crie seu repositório e envie o código após preencher os integrantes. Nenhum repositório remoto foi criado automaticamente.
-
-## Integrantes
-
-| Nome | Matrícula | Responsabilidades |
-| --- | --- | --- |
-| Preencher | Preencher | Preencher |
-| Preencher | Preencher | Preencher |
-| Preencher | Preencher | Preencher |
-
-Professor(a): preencher. Turma/semestre: preencher.

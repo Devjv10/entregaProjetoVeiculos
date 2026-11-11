@@ -3,14 +3,16 @@ import type { Rental } from "../types";
 import { dateTime, money } from "../utils/format";
 import { Empty, Status } from "./UI";
 
-interface RentalListProps {
+export function RentalList({
+  rentals,
+  admin = false,
+  onReturn,
+}: {
   rentals: Rental[];
   admin?: boolean;
   onReturn?: (rental: Rental) => void;
-}
-
-export function RentalList({ rentals, admin = false, onReturn }: RentalListProps) {
-  if (!rentals.length) {
+}) {
+  if (!rentals.length)
     return (
       <Empty
         title="Nenhuma locação por aqui"
@@ -28,8 +30,6 @@ export function RentalList({ rentals, admin = false, onReturn }: RentalListProps
         }
       />
     );
-  }
-
   return (
     <div className="table-scroll">
       <table>
@@ -43,30 +43,44 @@ export function RentalList({ rentals, admin = false, onReturn }: RentalListProps
           </tr>
         </thead>
         <tbody>
-          {rentals.map(({ id, vehicle, user, startDate, expectedReturnDate, actualReturnDate, status, estimatedTotal, finalTotal }) => (
-            <tr key={id}>
+          {rentals.map((rental) => (
+            <tr key={rental.id}>
               <td>
-                <Link className="table-title" to={`/veiculos/${vehicle.id}`}>
-                  {vehicle.brand} {vehicle.model}
+                <Link
+                  className="table-title"
+                  to={`/veiculos/${rental.vehicle.id}`}
+                >
+                  {rental.vehicle.brand} {rental.vehicle.model}
                 </Link>
-                <small>{admin ? user.name : vehicle.plate}</small>
+                <small>{admin ? rental.user.name : rental.vehicle.plate}</small>
               </td>
               <td>
-                {dateTime(startDate)}
-                <small>Até {dateTime(expectedReturnDate)}</small>
-                {actualReturnDate && <small>Devolvido: {dateTime(actualReturnDate)}</small>}
+                {dateTime(rental.startDate)}
+                <small>Até {dateTime(rental.expectedReturnDate)}</small>
+                {rental.actualReturnDate && (
+                  <small>Devolvido: {dateTime(rental.actualReturnDate)}</small>
+                )}
               </td>
               <td>
-                <strong>{money(finalTotal ?? estimatedTotal)}</strong>
-                <small>{status === "ACTIVE" ? "Total previsto" : "Valor final"}</small>
+                <strong>
+                  {money(rental.finalTotal ?? rental.estimatedTotal)}
+                </strong>
+                <small>
+                  {rental.status === "ACTIVE"
+                    ? "Total previsto"
+                    : "Valor final"}
+                </small>
               </td>
               <td>
-                <Status status={status} />
+                <Status status={rental.status} />
               </td>
               {onReturn && (
                 <td>
-                  {status === "ACTIVE" ? (
-                    <button className="btn secondary compact" onClick={() => onReturn({ id, vehicle, user, startDate, expectedReturnDate, actualReturnDate, status, estimatedTotal, finalTotal })}>
+                  {rental.status === "ACTIVE" ? (
+                    <button
+                      className="btn secondary compact"
+                      onClick={() => onReturn(rental)}
+                    >
                       Devolver
                     </button>
                   ) : (

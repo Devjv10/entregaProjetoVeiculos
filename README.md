@@ -5,7 +5,7 @@ Aplicação acadêmica da disciplina **Programação com Frameworks Web**. Integ
 ## Funcionalidades
 
 - Cadastro público de clientes, login, consulta da sessão e logout.
-- Perfis `CLIENTE` e `ADMIN` com permissões verificadas na API.
+- Perfis CLIENTE e ADMIN com permissões verificadas na API.
 - Catálogo com pesquisa, categorias, disponibilidade, detalhes e paginação.
 - Cadastro, edição e exclusão segura de veículos pelo administrador.
 - Locação com retirada imediata, preço contratado preservado e cálculo decimal.
@@ -18,18 +18,18 @@ Aplicação acadêmica da disciplina **Programação com Frameworks Web**. Integ
 ## Tecnologias
 
 | Camada | Tecnologias |
-|---|---|
+| --- | --- |
 | Frontend | React 19, TypeScript 5, Vite 7, Tailwind CSS 4, React Router 7, Axios, Lucide React, React Hook Form, Zod 4, Sonner |
 | Backend | Node.js, Express 5, TypeScript, Prisma ORM 6.19, MySQL, JWT, bcryptjs, Zod, CORS, dotenv, Helmet, express-rate-limit |
 | Qualidade | ESLint, Vitest, Supertest, TypeScript strict |
 
 As versões exatas estão no `package-lock.json`. Use `npm ci` para reproduzir a instalação. A interface usa Tailwind CSS 4 integrado ao Vite e CSS próprio para os componentes visuais. Prisma CLI e Client usam a mesma versão.
 
-Referências de compatibilidade: Prisma 6 e Vite. Use **Node 22 LTS, versão 22.18 ou superior**, com npm 10 ou superior. As verificações locais desta entrega foram realizadas com Node 26.6.0; a versão recomendada está em `.nvmrc`.
+Referências de compatibilidade: [Prisma 6](https://www.prisma.io/docs/orm/v6/reference/system-requirements) e [Vite](https://vite.dev/guide/). Use Node **22 LTS, versão 22.18 ou superior**, com npm 10 ou superior. As verificações locais desta entrega foram realizadas com Node 26.6.0; a versão recomendada está em `.nvmrc`.
 
 ## Estrutura
 
-```
+```text
 .
 ├── backend/
 │   ├── prisma/
@@ -66,7 +66,7 @@ Os handlers HTTP ficam em `routes/`; a lógica transacional fica em `services/re
 
 ## Instalação local
 
-**Pré-requisitos:** Node.js compatível, npm e servidor MySQL 8.0 ou 8.4 acessível. MySQL deve usar InnoDB. Docker é uma alternativa opcional para fornecer o servidor, não uma substituição do banco.
+Pré-requisitos: Node.js compatível, npm e servidor **MySQL 8.0 ou 8.4** acessível. MySQL deve usar InnoDB. Docker é uma alternativa opcional para fornecer o servidor, não uma substituição do banco.
 
 Na raiz do projeto:
 
@@ -77,7 +77,7 @@ cp frontend/.env.example frontend/.env
 node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"
 ```
 
-Copie o segredo gerado para `JWT_SECRET` em `backend/.env`. Escolha as credenciais do administrador e do banco. **Não publique seus arquivos `.env`.**
+Copie o segredo gerado para `JWT_SECRET` em `backend/.env`. Escolha as credenciais do administrador e do banco. Não publique seus arquivos `.env`.
 
 ### Preparar MySQL instalado
 
@@ -117,10 +117,10 @@ GRANT ALL PRIVILEGES ON driveflow_test.* TO 'driveflow'@'%';
 
 Nas próximas execuções: `docker start driveflow-mysql`.
 
-## Variáveis de ambiente
+### Variáveis de ambiente
 
 | Variável | Local | Descrição |
-|---|---|---|
+| --- | --- | --- |
 | `DATABASE_URL` | backend | `mysql://USUARIO:SENHA@localhost:3306/driveflow` |
 | `JWT_SECRET` | backend | Segredo aleatório de no mínimo 32 caracteres |
 | `JWT_EXPIRES_IN_SECONDS` | backend | Expiração entre 60 e 86400 segundos; padrão 28800 (8 horas) |
@@ -136,7 +136,7 @@ Nas próximas execuções: `docker start driveflow-mysql`.
 
 Codifique caracteres especiais da senha na URL com percent-encoding. Variáveis `VITE_*` são públicas; nunca coloque senhas ou `JWT_SECRET` nelas.
 
-## Gerar cliente, aplicar migrations e seed
+### Gerar cliente, aplicar migrations e seed
 
 Depois de configurar `backend/.env` e iniciar MySQL:
 
@@ -147,9 +147,9 @@ npm run db:seed
 npm run dev
 ```
 
-- Frontend: http://localhost:5173
-- API: http://localhost:3333/api
-- Verificação HTTP: http://localhost:3333/api/health
+- Frontend: **http://localhost:5173**
+- API: **http://localhost:3333/api**
+- Verificação HTTP: **http://localhost:3333/api/health**
 
 O Vite encaminha `/api` para a porta 3333. Use `localhost` no navegador para corresponder à origem configurada. Caso altere a porta da API, atualize o proxy em `frontend/vite.config.ts`.
 
@@ -165,32 +165,31 @@ Para desenvolver novas alterações de schema, use `npm exec -w backend -- prism
 
 ### Diárias e dinheiro
 
-A aplicação oferece retirada imediata, sem agendamento de reservas. O formulário mostra o início e o atualiza na confirmação. O servidor aceita a intenção de início com tolerância de cinco minutos e registra seu próprio horário como início efetivo. A devolução prevista deve ser futura e estar em até 365 dias.
+A aplicação oferece **retirada imediata**, sem agendamento de reservas. O formulário mostra o início e o atualiza na confirmação. O servidor aceita a intenção de início com tolerância de cinco minutos e registra seu próprio horário como início efetivo. A devolução prevista deve ser futura e estar em até 365 dias.
 
 - Diárias previstas = `ceil((devolução prevista − início efetivo) / 24 horas)`.
 - Total previsto = diárias previstas × diária contratada.
 - Na devolução, diárias efetivas = `max(1, ceil((horário do servidor − início) / 24 horas))`.
 - Valor final = diárias efetivas × diária contratada. Devolução antecipada usa o tempo efetivo; atraso acrescenta diárias inteiras, sem multa adicional.
 - Exemplo: diária R$ 149,90 por 24 horas custa R$ 149,90; por 24 horas e um minuto, R$ 299,80.
-
-A diária é copiada do veículo para `contractedDailyRate` na transação. Edições posteriores do veículo não alteram contratos existentes.
+- A diária é copiada do veículo para `contractedDailyRate` na transação. Edições posteriores do veículo não alteram contratos existentes.
 
 O banco usa `DECIMAL`, e a API calcula com `Prisma.Decimal`. Preços são strings na API. A estimativa da interface multiplica centavos com `BigInt`; a API continua sendo a fonte definitiva do valor. Datas trafegam em ISO 8601, são armazenadas em UTC e aparecem no fuso local do navegador. O cálculo usa duração de 24 horas, não mudança de dia do calendário.
 
 ### Concorrência e integridade
 
-Na locação, uma transação executa `updateMany` com as condições `id` e `status=AVAILABLE`. O InnoDB bloqueia a linha durante a escrita. Uma única solicitação consegue alterar o status para `RENTED`; uma concorrente encontra zero linhas disponíveis e recebe HTTP 409. Criação do contrato e alteração do veículo confirmam ou revertem juntas.
+Na locação, uma transação executa `updateMany` com as condições `id` e `status=AVAILABLE`. O InnoDB bloqueia a linha durante a escrita. Uma única solicitação consegue alterar o status para RENTED; uma concorrente encontra zero linhas disponíveis e recebe HTTP 409. Criação do contrato e alteração do veículo confirmam ou revertem juntas.
 
 Na devolução, a mesma estratégia condiciona a atualização a `status=ACTIVE`. Apenas a solicitação vencedora encerra o contrato e libera o veículo. O horário e o preço final são calculados no servidor. Conflitos transacionais do Prisma também são traduzidos para 409.
 
-A edição administrativa não aceita `RENTED` como status manual. Alterações para `AVAILABLE` ou `MAINTENANCE` exigem que o veículo ainda não esteja alugado. É permitido ajustar dados e diária de veículo alugado omitindo status, preservando o preço do contrato atual.
+A edição administrativa não aceita RENTED como status manual. Alterações para AVAILABLE ou MAINTENANCE exigem que o veículo ainda não esteja alugado. É permitido ajustar dados e diária de veículo alugado omitindo `status`, preservando o preço do contrato atual.
 
 Chaves estrangeiras `RESTRICT` protegem o histórico, inclusive em disputas entre exclusão e locação. Veículos com qualquer histórico não podem ser excluídos. E-mail e placa são únicos.
 
 ### Autorização e sessão
 
 | Operação | CLIENTE | ADMIN |
-|---|---|---|
+| --- | --- | --- |
 | Consultar catálogo/detalhes | Sim | Sim |
 | Cadastrar/editar/excluir veículo | Não | Sim |
 | Criar locação | Para si | Não |
@@ -205,12 +204,10 @@ O frontend guarda o token em `sessionStorage`, válido somente naquela aba, envi
 
 ## API REST
 
-- Sucesso: `{ "data": ... }`
-- Listagens: `{ "data": [], "meta": { "page": 1, "limit": 12, "total": 0, "pages": 0 } }`
-- Erro: `{ "error": { "message": "...", "details": ... } }`, com `details` apenas quando há validação.
+Sucesso: `{ "data": ... }`. Listagens: `{ "data": [], "meta": { "page": 1, "limit": 12, "total": 0, "pages": 0 } }`. Erro: `{ "error": { "message": "...", "details": ... } }`, com `details` apenas quando há validação.
 
 | Método | Rota | Acesso / descrição |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/api/health` | Saúde HTTP, público |
 | POST | `/api/auth/register` | Cadastro público CLIENTE |
 | POST | `/api/auth/login` | Login público |
@@ -226,9 +223,9 @@ O frontend guarda o token em `sessionStorage`, válido somente naquela aba, envi
 | PATCH | `/api/rentals/:id/return` | Devolução conforme propriedade/perfil |
 | GET | `/api/dashboard/stats` | Indicadores conforme perfil |
 
-**Códigos HTTP:** 200 sucesso, 201 criação, 400 validação, 401 sessão/credenciais inválidas, 403 permissão insuficiente, 404 recurso inexistente ou locação de outro cliente, 409 conflito/integridade, 429 limite de tentativas, 500 falha interna.
+HTTP: 200 sucesso, 201 criação, 400 validação, 401 sessão/credenciais inválidas, 403 permissão insuficiente, 404 recurso inexistente ou locação de outro cliente, 409 conflito/integridade, 429 limite de tentativas, 500 falha interna.
 
-Exemplos para Postman, Insomnia ou curl: [`docs/API.md`](docs/API.md).
+Exemplos para Postman, Insomnia ou curl: [docs/API.md](docs/API.md).
 
 ## Verificações e testes
 
@@ -248,11 +245,11 @@ npm run db:test:migrate
 npm run test:integration
 ```
 
-A suíte exige sufixo `_test`, cria registros identificáveis por execução e remove apenas seus próprios registros ao terminar. **Nunca aponte para um banco de produção.** Ela cobre cadastro, login válido/inválido, autenticação, permissões, placas duplicadas, locação, indisponibilidade, duas locações simultâneas, devolução, duas devoluções simultâneas, preço contratado, propriedade e exclusão com histórico.
+A suíte exige sufixo `_test`, cria registros identificáveis por execução e remove apenas seus próprios registros ao terminar. Nunca aponte para um banco de produção. Ela cobre cadastro, login válido/inválido, autenticação, permissões, placas duplicadas, locação, indisponibilidade, duas locações simultâneas, devolução, duas devoluções simultâneas, preço contratado, propriedade e exclusão com histórico.
 
-Resultados e limites de validação desta entrega: [`docs/VALIDACAO.md`](docs/VALIDACAO.md).
+Resultados e limites de validação desta entrega: [docs/VALIDACAO.md](docs/VALIDACAO.md).
 
-## Build e execução separados
+### Build e execução separados
 
 ```bash
 npm run dev -w backend
@@ -271,9 +268,9 @@ Após `npm run build`, execute `npm run start -w backend` para o backend compila
 6. Registre a devolução e observe o valor final e a liberação do veículo.
 7. Consulte as locações como administrador e tente excluir um veículo com histórico.
 
-- Roteiro completo e dez perguntas técnicas
-- Diagrama de casos de uso
-- Diagrama de entidades
+- [Roteiro completo e dez perguntas técnicas](docs/APRESENTACAO.md)
+- [Diagrama de casos de uso](docs/CASOS_DE_USO.md)
+- [Diagrama de entidades](docs/ENTIDADES.md)
 
 Os diagramas são propostas iniciais para adaptação às orientações do professor. Nenhuma questão da entrega individual foi inventada como se tivesse sido fornecida pela disciplina.
 
@@ -283,10 +280,10 @@ O projeto está preparado para versionamento: dependências e arquivos `.env` s�
 
 ## Integrantes
 
-| Nomes|
-| Rafael Ribeiro de Alustau |
-| Pedro Henrique Neves Vitorino |
-| João Victor Araújo de Andrade |
+| Nome | Matrícula | Responsabilidades |
+| --- | --- | --- |
+| Preencher | Preencher | Preencher |
+| Preencher | Preencher | Preencher |
+| Preencher | Preencher | Preencher |
 
-
-
+Professor(a): preencher. Turma/semestre: preencher.

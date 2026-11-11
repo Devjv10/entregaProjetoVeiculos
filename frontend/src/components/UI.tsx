@@ -175,3 +175,125 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
     </article>
   );
 }
+export function Pagination({
+  page,
+  pages,
+  total,
+  setPage,
+}: {
+  page: number;
+  pages: number;
+  total: number;
+  setPage: (page: number) => void;
+}) {
+  return (
+    <div className="pagination">
+      <span className="muted small">
+        {total} registro{total === 1 ? "" : "s"} · Página {page} de{" "}
+        {Math.max(1, pages)}
+      </span>
+      <div>
+        <button
+          className="icon-button"
+          disabled={page <= 1}
+          onClick={() => setPage(page - 1)}
+          aria-label="Página anterior"
+        >
+          <ChevronLeft size={18} />
+        </button>
+        <button
+          className="icon-button"
+          disabled={page >= pages}
+          onClick={() => setPage(page + 1)}
+          aria-label="Próxima página"
+        >
+          <ChevronRight size={18} />
+        </button>
+      </div>
+    </div>
+  );
+}
+export function ConfirmDialog({
+  title,
+  children,
+  pending,
+  onCancel,
+  onConfirm,
+}: {
+  title: string;
+  children: ReactNode;
+  pending: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const dialog = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const previousFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, []);
+  return (
+    <div className="modal-backdrop">
+      <section
+        ref={dialog}
+        tabIndex={-1}
+        className="modal panel"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && !pending) onCancel();
+          if (event.key === "Tab") {
+            const buttons = dialog.current?.querySelectorAll<HTMLButtonElement>(
+              "button:not(:disabled)",
+            );
+            if (!buttons?.length) {
+              event.preventDefault();
+              return;
+            }
+            const first = buttons[0];
+            const last = buttons[buttons.length - 1];
+            if (
+              event.shiftKey &&
+              (document.activeElement === first ||
+                document.activeElement === dialog.current)
+            ) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        }}
+      >
+        <h2 id="confirm-title">{title}</h2>
+        {children}
+        <div className="form-actions">
+          <button
+            className="btn secondary"
+            disabled={pending}
+            onClick={onCancel}
+          >
+            Cancelar
+          </button>
+          <button
+            className="btn primary"
+            disabled={pending}
+            onClick={onConfirm}
+          >
+            {pending ? "Processando…" : "Confirmar"}
+          </button>
+        </div>
+      </section>
+    </div>
+  );
+}

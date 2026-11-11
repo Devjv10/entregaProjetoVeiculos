@@ -295,5 +295,5 @@ export function ConfirmDialog({
         </div>
       </section>
     </div>
-  );
+  )  ;
 }
